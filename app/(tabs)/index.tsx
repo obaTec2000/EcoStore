@@ -1,75 +1,239 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+// HomeScreen.tsx
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import {
+  View,
+  Text,
+  ScrollView,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+  StyleSheet,
+  StatusBar,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
+
+import HomeHeader from "@/components/HomeHeader";
+import ProductCard from "@/components/ProductCard";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import AppColors from "@/constants/Colors";
+import { useProductsStore } from "@/store/productStore";
+import { Product } from "@/type";
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const {
+    products,
+    categories,
+    loading,
+    error,
+    fetchProducts,
+    fetchCategories,
+  } = useProductsStore();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const featuredProducts = useMemo(() => [...products].reverse(), [products]);
+
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProducts();
+    await fetchCategories();
+    setRefreshing(false);
+  };
+
+  const navigateToCategory = (category: string) => {
+    router.push({
+      pathname: "/(tabs)/shop",
+      params: { category },
+    });
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.centered}>
+        <LoadingSpinner fullScreen />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.centered}>
+        <Text style={styles.errorText}>Error: {error}</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView  style={styles.container}>
+      <StatusBar />
+      <HomeHeader />
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {/* Categories Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Categories</Text>
+          </View>
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {categories.length > 0 ? (
+              categories.map((category) => (
+                <TouchableOpacity
+                  key={category}
+                  style={styles.categoryButton}
+                  onPress={() => navigateToCategory(category)}
+                >
+                  <AntDesign
+                    name="tag"
+                    size={16}
+                    color={AppColors.primary[500]}
+                  />
+                  <Text style={styles.categoryText}>
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text>No categories available</Text>
+            )}
+          </ScrollView>
+        </View>
+
+        {/* Featured Products Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Featured Products</Text>
+            <TouchableOpacity onPress={() => router.push("/(tabs)/shop")}>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            data={featuredProducts}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.featuredProducts}
+            renderItem={({ item }) => (
+              <View style={styles.featuredProductCard}>
+                <ProductCard product={item} compact />
+              </View>
+            )}
+          />
+        </View>
+
+        {/* Newest Arrivals Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Newest Arrivals</Text>
+            <TouchableOpacity onPress={() => router.push("/(tabs)/shop")}>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.productsGrid}>
+            {products.length > 0 ? (
+              products.map((product) => (
+                <View key={product.id} style={styles.gridItem}>
+                  <ProductCard product={product} customStyle={{ width: "100%" }} />
+                </View>
+              ))
+            ) : (
+              <Text>No products available</Text>
+            )}
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
+// ----------------- Styles -----------------
+
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: AppColors.background.primary,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: AppColors.background.primary,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  scrollContent: {
+    paddingBottom: 300,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  section: {
+    marginVertical: 16,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontFamily: "Inter-SemiBold",
+    fontSize: 18,
+    color: AppColors.text.primary,
+  },
+  seeAllText: {
+    fontFamily: "Inter-Medium",
+    fontSize: 14,
+    color: AppColors.primary[500],
+  },
+  categoryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: AppColors.background.secondary,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    marginHorizontal: 5,
+  },
+  categoryText: {
+    fontFamily: "Inter-Medium",
+    fontSize: 14,
+    color: AppColors.text.primary,
+    marginLeft: 8,
+  },
+  featuredProducts: {
+    gap: 12,
+  },
+  featuredProductCard: {
+    marginRight: 10,
+  },
+  productsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  gridItem: {
+    width: "48%",
+  },
+  errorText: {
+    fontFamily: "Inter-Medium",
+    fontSize: 16,
+    color: AppColors.error,
+    textAlign: "center",
   },
 });
