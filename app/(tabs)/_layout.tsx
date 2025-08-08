@@ -1,26 +1,25 @@
-import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import TabBarBackground from "@/components/ui/TabBarBackground";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { Feather, Foundation } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
+import { HapticTab } from "../../components/HapticTab";
+import { IconSymbol } from "../../components/ui/IconSymbol";
+import TabBarBackground from "../../components/ui/TabBarBackground";
+import AppColors from "../../constants/Colors"; // Use AppColors instead of Colors for primary
+
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors["light"].tint,
+        tabBarActiveTintColor: AppColors.primary[700], // Primary 500 color
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
+            // Transparent for blur effect
             position: "absolute",
           },
           default: {},

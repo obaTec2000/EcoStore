@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   Image,
@@ -12,6 +13,8 @@ import {
 import AppColors from '../../constants/Colors';
 
 const ProfileScreen = () => {
+  const router = useRouter();
+
   // Mock user data
   const user = {
     name: "Alex Johnson",
@@ -29,6 +32,11 @@ const ProfileScreen = () => {
     { icon: "card", name: "Payment" },
     { icon: "settings", name: "Settings" }
   ];
+
+  const handleLogout = () => {
+
+    router.replace('/auth'); 
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: AppColors.background.primary }]}>
@@ -83,6 +91,16 @@ const ProfileScreen = () => {
               />
             </TouchableOpacity>
           ))}
+
+          {/* Logout */}
+          <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+            <Ionicons 
+              name="log-out-outline" 
+              size={20} 
+              color={AppColors.error || 'red'} 
+            />
+            <Text style={[styles.menuText, { color: AppColors.error || 'red' }]}>Logout</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -90,80 +108,21 @@ const ProfileScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  header: {
-    padding: 20,
-    alignItems: 'center'
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontFamily: 'Inter-Bold'
-  },
-  profileCard: {
-    margin: 20,
-    padding: 20,
-    borderRadius: 12,
-    alignItems: 'center'
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 16,
-    borderWidth: 3,
-    borderColor: AppColors.primary[100]
-  },
-  userName: {
-    fontSize: 20,
-    fontFamily: 'Inter-SemiBold',
-    marginBottom: 4
-  },
-  userEmail: {
-    fontSize: 14,
-    fontFamily: 'Inter-Regular',
-    marginBottom: 20
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'center'
-  },
-  statItem: {
-    alignItems: 'center',
-    paddingHorizontal: 20
-  },
-  statNumber: {
-    fontSize: 18,
-    fontFamily: 'Inter-Bold'
-  },
-  statLabel: {
-    fontSize: 12,
-    fontFamily: 'Inter-Regular',
-    marginTop: 4
-  },
-  statDivider: {
-    width: 1,
-    height: 40
-  },
-  menuContainer: {
-    margin: 20,
-    borderRadius: 12,
-    overflow: 'hidden'
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1
-  },
-  menuText: {
-    flex: 1,
-    fontSize: 16,
-    fontFamily: 'Inter-Medium',
-    marginLeft: 16
-  }
+  container: { flex: 1 },
+  header: { padding: 20, alignItems: 'center' },
+  headerTitle: { fontSize: 24, fontFamily: 'Inter-Bold' },
+  profileCard: { margin: 20, padding: 20, borderRadius: 12, alignItems: 'center' },
+  avatar: { width: 100, height: 100, borderRadius: 50, marginBottom: 16, borderWidth: 3, borderColor: AppColors.primary[100] },
+  userName: { fontSize: 20, fontFamily: 'Inter-SemiBold', marginBottom: 4 },
+  userEmail: { fontSize: 14, fontFamily: 'Inter-Regular', marginBottom: 20 },
+  statsContainer: { flexDirection: 'row', width: '100%', justifyContent: 'center' },
+  statItem: { alignItems: 'center', paddingHorizontal: 20 },
+  statNumber: { fontSize: 18, fontFamily: 'Inter-Bold' },
+  statLabel: { fontSize: 12, fontFamily: 'Inter-Regular', marginTop: 4 },
+  statDivider: { width: 1, height: 40 },
+  menuContainer: { margin: 20, borderRadius: 12, overflow: 'hidden' },
+  menuItem: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1 },
+  menuText: { flex: 1, fontSize: 16, fontFamily: 'Inter-Medium', marginLeft: 16 }
 });
 
 export default ProfileScreen;

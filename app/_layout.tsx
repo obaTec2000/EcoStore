@@ -10,21 +10,15 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(null); // null = still checking
+  const [isAuthenticated, setIsAuthenticated] = useState(null); 
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // 🚀 Force logout every time app reloads during development
         await AsyncStorage.removeItem("authToken");  
 
-        // If you want real checking later, comment above line and uncomment below:
-        // const token = await AsyncStorage.getItem("authToken");
-        // setIsAuthenticated(!!token);
-
-        setIsAuthenticated(false); // Always false so login shows first
+        setIsAuthenticated(false); 
       } catch (error) {
-        console.log("Auth check error:", error);
         setIsAuthenticated(false);
       }
     };
