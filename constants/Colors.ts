@@ -31,16 +31,16 @@ export const Colors = {
 
 const AppColors = {
   primary: {
-    50: "#EBF5FF",
-    100: "#DBEAFE",
-    200: "#BFDBFE",
-    300: "#93C5FD",
-    400: "#60A5FA",
-    500: "#3B82F6", // Primary blue
-    600: "#2563EB",
-    700: "#1D4ED8",
-    800: "#1E40AF",
-    900: "#1E3A8A",
+    50: "#FFF3E0",
+    100: "#FFE0B2",
+    200: "#FFCC80",
+    300: "#FFB74D",
+    400: "#FFA726",
+    500: "#F57C00", // Primary orange
+    600: "#EF6C00",
+    700: "#E65100",
+    800: "#BF360C",
+    900: "#A83200",
   },
   accent: {
     50: "#FFF7ED",
@@ -48,7 +48,7 @@ const AppColors = {
     200: "#FED7AA",
     300: "#FDBA74",
     400: "#FB923C",
-    500: "#F97316", // Accent orange
+    500: "#F97316",
     600: "#EA580C",
     700: "#C2410C",
     800: "#9A3412",
@@ -85,5 +85,6 @@ const AppColors = {
     inverse: "#FFFFFF", // White text for dark backgrounds
   },
 };
+
 
 export default AppColors;
