@@ -15,11 +15,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import HomeHeader from "@/components/HomeHeader";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
 import AppColors from "@/constants/Colors";
 import { useProductsStore } from "@/store/productStore";
+import HomeHeader from "../../components/HomeHeader";
 
 export default function HomeScreen() {
   const router = useRouter();

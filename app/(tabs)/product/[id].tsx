@@ -1,10 +1,10 @@
-import CommonHeader from "@/components/CommonHeader";
 import ProductDetailScreen from "@/components/ui/ProductDetailScreen";
 import AppColors from "@/constants/Colors";
 import { getProduct } from "@/lib/api";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import CommonHeader from "../../../components/CommonHeader";
 import { Product } from "../../../type";
 
 const SingleProductScreen = () => {
