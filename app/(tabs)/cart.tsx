@@ -1,3 +1,4 @@
+import EmptyCart from "@/components/Empty";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
@@ -85,9 +86,7 @@ const CartScreen = () => {
             </View>
           )}
           ListEmptyComponent={
-            <Text style={{ textAlign: "center", marginVertical: 20 }}>
-              Your cart is empty.
-            </Text>
+            <EmptyCart />
           }
         />
       </View>
