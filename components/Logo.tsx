@@ -13,7 +13,7 @@ const Logo = () => {
         size={25}
         color={AppColors.primary[700]}
       />
-      <Text style={styles.logoText}>shopcart</Text>
+      <Text style={styles.logoText}>JohnCart</Text>
     </TouchableOpacity>
   );
 };

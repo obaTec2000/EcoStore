@@ -1,26 +1,25 @@
 // HomeScreen.tsx
 
+import { AntDesign } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
   FlatList,
-  TouchableOpacity,
   RefreshControl,
-  StyleSheet,
+  ScrollView,
   StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
 
 import HomeHeader from "@/components/HomeHeader";
-import ProductCard from "@/components/ProductCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import ProductCard from "@/components/ProductCard";
 import AppColors from "@/constants/Colors";
 import { useProductsStore } from "@/store/productStore";
-import { Product } from "@/type";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -91,12 +90,12 @@ export default function HomeScreen() {
           </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {categories.length > 0 ? (
+            {categories?.length > 0 ? (
               categories.map((category) => (
                 <TouchableOpacity
-                  key={category}
+                  key={category.url}
                   style={styles.categoryButton}
-                  onPress={() => navigateToCategory(category)}
+                  onPress={() => navigateToCategory(`${category.name}`)}
                 >
                   <AntDesign
                     name="tag"
@@ -104,7 +103,7 @@ export default function HomeScreen() {
                     color={AppColors.primary[500]}
                   />
                   <Text style={styles.categoryText}>
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                    {category?.name?.charAt(0)?.toUpperCase() + category?.name?.slice(1)}
                   </Text>
                 </TouchableOpacity>
               ))

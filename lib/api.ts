@@ -1,6 +1,6 @@
-import { Product } from "@/type";
+import { Category, Product } from "../type";
 
-const API_URL = "https://fakestoreapi.com";
+const API_URL = "https://dummyjson.com";
 
 // Get all Products
 const getProducts = async (): Promise<Product[]> => {
@@ -10,7 +10,8 @@ const getProducts = async (): Promise<Product[]> => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
-    return await response.json();
+    const data = await response.json();
+    return data?.products;  
   } catch (error) {
     console.log("Network response was not ok", error);
     throw error;
@@ -31,7 +32,7 @@ export const getProduct = async (id: number): Promise<Product> => {
   }
 };
 // Get all categories
-const getCategories = async (): Promise<string[]> => {
+const getCategories = async (): Promise<Category[]> => {
   try {
     const response = await fetch(`${API_URL}/products/categories`);
     if (!response.ok) {
@@ -44,4 +45,5 @@ const getCategories = async (): Promise<string[]> => {
   }
 };
 
-export { getProducts, getCategories };
+export { getCategories, getProducts };
+

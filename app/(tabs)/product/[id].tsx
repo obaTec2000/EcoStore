@@ -1,18 +1,20 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
 import CommonHeader from "@/components/CommonHeader";
+import ProductDetailScreen from "@/components/ui/ProductDetailScreen";
 import AppColors from "@/constants/Colors";
-import { Product } from "@/type";
 import { getProduct } from "@/lib/api";
+import { useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Product } from "../../../type";
 
 const SingleProductScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
   const idNum = Number(id);
+  
+  
   useEffect(() => {
     const fetchProductData = async () => {
       setLoading(true);
@@ -36,13 +38,27 @@ const SingleProductScreen = () => {
 
   return (
     <View
-      style={{ paddingTop: 30, backgroundColor: AppColors.background.primary }}
+      style={styles.container}
     >
       <CommonHeader />
-    </View>
+      <View style={styles.container}>
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : error ? (
+          <Text>{error}</Text>
+        ) : product ? (
+          <ProductDetailScreen product={product} />
+        ) : null}
+      </View>
+      </View>
   );
 };
 
 export default SingleProductScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: AppColors.background.primary,
+  }
+});

@@ -1,19 +1,19 @@
+import AppColors from "@/constants/Colors";
+import { useProductsStore } from "@/store/productStore";
+import { useRouter } from "expo-router";
+import React from "react";
 import {
-  Alert,
   Image,
   StyleProp,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ViewStyle,
+  ViewStyle
 } from "react-native";
-import React from "react";
-import { Product } from "@/type";
-import AppColors from "@/constants/Colors";
-import Button from "./Button";
 import Toast from "react-native-toast-message";
-import { useRouter } from "expo-router";
+import { Product } from "./../type";
+import Button from "./Button";
 
 interface ProductCardProps {
   product: Product;
@@ -25,13 +25,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
   compact = false,
   customStyle,
 }) => {
-  const { id, title, price, image, category } = product;
+  const {addToCart} = useProductsStore()
+  const { id, title, price, images, category } = product ?? {} ;
   const router = useRouter();
   const handleProductRoute = () => {
     router.push(`/product/${id}`);
   };
 
   const handleAddToCart = () => {
+    addToCart(product);
     Toast.show({
       type: "success",
       text1: "Product added to cart",
@@ -48,13 +50,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
     >
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: image }}
+          source={{ uri: Array.isArray(images) ? images[0] : images }}
           style={styles.image}
           resizeMode="contain"
         />
       </View>
       <View style={styles.content}>
-        <Text style={styles.category}>{category}</Text>
+        <Text style={styles.category}>{category.name}</Text>
 
         <Text
           style={styles.title}

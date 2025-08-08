@@ -1,3 +1,8 @@
+import AppColors from "@/constants/Colors";
+import { useProductsStore } from "@/store/productStore";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React from "react";
 import {
   Platform,
   SafeAreaView,
@@ -7,13 +12,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import AppColors from "@/constants/Colors";
 import Logo from "./Logo";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 
 const HomeHeader = () => {
+  const { cart } = useProductsStore();
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
@@ -53,7 +55,7 @@ const HomeHeader = () => {
               color={AppColors.primary[700]}
             />
             <View style={styles.itemsView}>
-              <Text style={styles.itemsText}>0</Text>
+              <Text style={styles.itemsText}>{cart.length}</Text>
             </View>
           </TouchableOpacity>
         </View>
