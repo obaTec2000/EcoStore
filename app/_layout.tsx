@@ -10,7 +10,7 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(null); 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); 
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -18,7 +18,7 @@ export default function RootLayout() {
         await AsyncStorage.removeItem("authToken");  
 
         setIsAuthenticated(false); 
-      } catch (error) {
+      } catch (error: any) {
         setIsAuthenticated(false);
       }
     };

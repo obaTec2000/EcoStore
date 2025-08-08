@@ -25,7 +25,7 @@ export default function LoginScreen() {
             return;
         }
         await AsyncStorage.setItem("authToken", "my-secret-token");
-        router.replace("(tabs)");
+        router.replace("/(tabs)");
     };
 
     return (
@@ -75,7 +75,7 @@ export default function LoginScreen() {
 
                     {/* Register Link */}
                     <View style={styles.registerContainer}>
-                        <Text style={styles.registerText}>Don't have an account? </Text>
+                        <Text style={styles.registerText}>{"Don't have an account? "}</Text>
                         <TouchableOpacity onPress={() => router.push("/auth/register")}>
                             <Text style={styles.registerLink}>Sign up</Text>
                         </TouchableOpacity>

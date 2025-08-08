@@ -32,7 +32,7 @@ export default function RegisterScreen() {
 
     // TODO: Replace with real API call
     await AsyncStorage.setItem("authToken", "registered-user");
-    router.replace("(tabs)");
+    router.replace("/(tabs)");
   };
 
   return (

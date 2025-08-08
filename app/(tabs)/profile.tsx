@@ -35,7 +35,7 @@ const ProfileScreen = () => {
 
   const handleLogout = () => {
 
-    router.replace('/auth'); 
+    router.replace('/auth/index'); 
   };
 
   return (
@@ -79,7 +79,7 @@ const ProfileScreen = () => {
               ]}
             >
               <Ionicons 
-                name={item.icon} 
+                name={item.icon as any} 
                 size={20} 
                 color={AppColors.primary[500]} 
               />

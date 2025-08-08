@@ -1,8 +1,8 @@
-import AppColors from "@/constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import AppColors from "../constants/Colors";
 
 const Logo = () => {
   const router = useRouter();

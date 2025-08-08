@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import ProductCard from '../../components/ProductCard';
 import AppColors from '../../constants/Colors';
 import { useProductsStore } from '../../store/productStore';
@@ -71,7 +72,7 @@ export default function ShopScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView edges={["top", "bottom"]} style={styles.container}>
       <TextInput
         placeholder="Search"
         style={styles.search}
@@ -162,7 +163,7 @@ export default function ShopScreen() {
           }
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
