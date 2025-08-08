@@ -18,7 +18,7 @@ export default function RootLayout() {
         await AsyncStorage.removeItem("authToken");  
 
         setIsAuthenticated(false); 
-      } catch (error: any) {
+      } finally {
         setIsAuthenticated(false);
       }
     };

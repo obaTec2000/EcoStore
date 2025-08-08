@@ -28,10 +28,11 @@ export default function HomeScreen() {
     categories,
     loading,
     error,
+    page,
+    total,
     fetchProducts,
     fetchCategories,
   } = useProductsStore();
-
   const [refreshing, setRefreshing] = useState(false);
 
   const featuredProducts = useMemo(() => [...products].reverse(), [products]);
@@ -55,7 +56,7 @@ export default function HomeScreen() {
     });
   };
 
-  if (loading) {
+  if (loading && products.length === 0) {
     return (
       <SafeAreaView style={styles.centered}>
         <LoadingSpinner fullScreen />
@@ -71,93 +72,110 @@ export default function HomeScreen() {
     );
   }
 
+  const loadMoreProducts = () => {
+    if (!loading && products.length < total) {
+      const nextPage = page + 1
+      fetchProducts(nextPage);
+    }
+  };
+
   return (
-    <SafeAreaView  style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar />
       <HomeHeader />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
+        ListHeaderComponent={
+          <>
+            {/* Categories Section */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Categories</Text>
+              </View>
+
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {categories?.length > 0 ? (
+                  categories.map((category) => (
+                    <TouchableOpacity
+                      key={category.url}
+                      style={styles.categoryButton}
+                      onPress={() => navigateToCategory(`${category.name}`)}
+                    >
+                      <AntDesign
+                        name="tag"
+                        size={16}
+                        color={AppColors.primary[500]}
+                      />
+                      <Text style={styles.categoryText}>
+                        {category?.name?.charAt(0)?.toUpperCase() + category?.name?.slice(1)}
+                      </Text>
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <Text>No categories available</Text>
+                )}
+              </ScrollView>
+            </View>
+
+            {/* Featured Products Section */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Featured Products</Text>
+                <TouchableOpacity onPress={() => router.push("/(tabs)/shop")}>
+                  <Text style={styles.seeAllText}>See All</Text>
+                </TouchableOpacity>
+              </View>
+
+              <FlatList
+                data={featuredProducts}
+                keyExtractor={(item) => item.id.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.featuredProducts}
+                renderItem={({ item }) => (
+                  <View style={styles.featuredProductCard}>
+                    <ProductCard product={item} compact />
+                  </View>
+                )}
+              />
+            </View>
+
+            {/* Newest Arrivals Section */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Newest Arrivals</Text>
+                <TouchableOpacity onPress={() => router.push("/(tabs)/shop")}>
+                  <Text style={styles.seeAllText}>See All</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </>
+        }
+        renderItem={({ item }) => (
+          <View style={styles.gridItem}>
+            <ProductCard product={item} customStyle={{ width: "100%" }} />
+          </View>
+        )}
+        ListEmptyComponent={
+          <Text>No products available</Text>
+        }
         contentContainerStyle={styles.scrollContent}
+        onEndReached={loadMoreProducts}
+        onEndReachedThreshold={0.9}
+        ListFooterComponent={
+          loading ? <LoadingSpinner /> : null
+        }
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-      >
-        {/* Categories Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Categories</Text>
-          </View>
-
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {categories?.length > 0 ? (
-              categories.map((category) => (
-                <TouchableOpacity
-                  key={category.url}
-                  style={styles.categoryButton}
-                  onPress={() => navigateToCategory(`${category.name}`)}
-                >
-                  <AntDesign
-                    name="tag"
-                    size={16}
-                    color={AppColors.primary[500]}
-                  />
-                  <Text style={styles.categoryText}>
-                    {category?.name?.charAt(0)?.toUpperCase() + category?.name?.slice(1)}
-                  </Text>
-                </TouchableOpacity>
-              ))
-            ) : (
-              <Text>No categories available</Text>
-            )}
-          </ScrollView>
-        </View>
-
-        {/* Featured Products Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Featured Products</Text>
-            <TouchableOpacity onPress={() => router.push("/(tabs)/shop")}>
-              <Text style={styles.seeAllText}>See All</Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            data={featuredProducts}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.featuredProducts}
-            renderItem={({ item }) => (
-              <View style={styles.featuredProductCard}>
-                <ProductCard product={item} compact />
-              </View>
-            )}
-          />
-        </View>
-
-        {/* Newest Arrivals Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Newest Arrivals</Text>
-            <TouchableOpacity onPress={() => router.push("/(tabs)/shop")}>
-              <Text style={styles.seeAllText}>See All</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.productsGrid}>
-            {products.length > 0 ? (
-              products.map((product) => (
-                <View key={product.id} style={styles.gridItem}>
-                  <ProductCard product={product} customStyle={{ width: "100%" }} />
-                </View>
-              ))
-            ) : (
-              <Text>No products available</Text>
-            )}
-          </View>
-        </View>
-      </ScrollView>
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+      />
     </SafeAreaView>
   );
 }

@@ -3,15 +3,15 @@ import { Category, Product } from "../type";
 const API_URL = "https://dummyjson.com";
 
 // Get all Products
-const getProducts = async (): Promise<Product[]> => {
+const getProducts = async (limit: number, skip: number): Promise<{products:Product[], total: number}> => {
   try {
-    const response = await fetch(`${API_URL}/products`);
+    const response = await fetch(`${API_URL}/products?limit=${limit}&skip=${skip}`);
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    return data?.products;  
+    return data;  
   } catch (error) {
     console.log("Network response was not ok", error);
     throw error;

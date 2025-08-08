@@ -35,7 +35,7 @@ const ProfileScreen = () => {
 
   const handleLogout = () => {
 
-    router.replace('/auth/index'); 
+    router.replace('/auth'); 
   };
 
   return (
