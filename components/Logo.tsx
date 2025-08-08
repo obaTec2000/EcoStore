@@ -1,8 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 import AppColors from "@/constants/Colors";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 const Logo = () => {
   const router = useRouter();
@@ -13,7 +13,7 @@ const Logo = () => {
         size={25}
         color={AppColors.primary[700]}
       />
-      <Text style={styles.logoText}>JohnCart</Text>
+      <Text style={styles.logoText}>OBATECH</Text>
     </TouchableOpacity>
   );
 };
