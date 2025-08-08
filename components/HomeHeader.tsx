@@ -1,6 +1,6 @@
 import AppColors from "@/constants/Colors";
 import { useProductsStore } from "@/store/productStore";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
@@ -22,7 +22,7 @@ const HomeHeader = () => {
       <View style={styles.header}>
         <Logo />
         <View style={styles.iconContainer}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.searchButton}
             onPress={() => router.push("/(tabs)/search")}
           >
@@ -31,8 +31,8 @@ const HomeHeader = () => {
               size={20}
               color={AppColors.primary[700]}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity
             style={styles.searchButton}
             onPress={() => router.push("/(tabs)/favorites")}
           >
@@ -44,7 +44,7 @@ const HomeHeader = () => {
             <View style={styles.itemsView}>
               <Text style={styles.itemsText}>0</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={styles.searchButton}
             onPress={() => router.push("/(tabs)/cart")}

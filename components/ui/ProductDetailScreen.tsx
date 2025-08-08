@@ -1,4 +1,5 @@
 import AppColors from '@/constants/Colors';
+import { useProductsStore } from '@/store/productStore';
 import { Product } from '@/type';
 import React, { useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -10,16 +11,19 @@ const { width } = Dimensions.get('window');
 
 const ProductDetailScreen = ({ product }: {product: Product}) => {
     const [quantity, setQuantity] = useState(1);
+      const {addToCart} = useProductsStore()
+        const {title } = product ?? {} ;
 
-    console.log(product, "Product details");
-
-    const handleAddToCart = () => {
+    
+      const handleAddToCart = () => {
+        addToCart(product);
         Toast.show({
-            type: 'success',
-            text1: 'Added to cart',
-            text2: `${product.title} (${quantity}) added to your cart`,
+          type: "success",
+          text1: "Product added to cart",
+          text2: `${title} has been added to your cart`,
+          visibilityTime: 2000,
         });
-    };
+      };
 
     const handleQuantityChange = (value: number) => {
         const newQuantity = quantity + value;

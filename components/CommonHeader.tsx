@@ -1,13 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import AppColors from "@/constants/Colors";
 import {
-  AntDesign,
   Feather,
-  Foundation,
-  MaterialCommunityIcons,
+  MaterialCommunityIcons
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import AppColors from "../constants/Colors";
+import { useProductsStore } from "../store/productStore";
 
 interface Props {
   isFav?: boolean;
@@ -16,6 +15,7 @@ interface Props {
 }
 
 const CommonHeader = ({ isFav, showCart, handleToggleFavorite }: Props) => {
+  const { cart } = useProductsStore();
   const router = useRouter();
   const handleGoBack = () => {
     if (router.canGoBack()) {
@@ -31,29 +31,17 @@ const CommonHeader = ({ isFav, showCart, handleToggleFavorite }: Props) => {
       </TouchableOpacity>
       <View style={styles.buttonView}>
         <TouchableOpacity
-          style={[styles.favoriteButton, isFav && styles.activeFavoriteButton]}
-        >
-          <AntDesign
-            name="hearto"
-            size={20}
-            color={
-              isFav ? AppColors.background.primary : AppColors.text.primary
-            }
-            fill={isFav ? AppColors.background.primary : "transparent"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
+          style={styles.searchButton}
           onPress={() => router.push("/(tabs)/cart")}
-          style={[styles.favoriteButton, isFav && styles.activeFavoriteButton]}
         >
           <MaterialCommunityIcons
             name="cart-outline"
-            size={24}
-            color={
-              isFav ? AppColors.background.primary : AppColors.text.primary
-            }
-            fill={isFav ? AppColors.background.primary : "transparent"}
+            size={20}
+            color={AppColors.primary[700]}
           />
+          <View style={styles.itemsView}>
+            <Text style={styles.itemsText}>{cart.length}</Text>
+          </View>
         </TouchableOpacity>
       </View>
     </View>
@@ -63,6 +51,37 @@ const CommonHeader = ({ isFav, showCart, handleToggleFavorite }: Props) => {
 export default CommonHeader;
 
 const styles = StyleSheet.create({
+  searchButton: {
+    backgroundColor: AppColors.primary[50],
+    borderRadius: 5,
+    width: 35,
+    height: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 8,
+    borderWidth: 1,
+    borderColor: AppColors.primary[500],
+    position: "relative",
+  },
+  itemsView: {
+    position: "absolute",
+    top: -5,
+    right: -5,
+    borderRadius: 50,
+    width: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: AppColors.primary[500],
+    backgroundColor: AppColors.background.primary,
+  },
+  itemsText: {
+    fontSize: 10,
+    color: AppColors.accent[500],
+    fontWeight: 800,
+  },
+
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -78,19 +97,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  favoriteButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: AppColors.background.secondary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  activeFavoriteButton: {
-    backgroundColor: AppColors.error,
-  },
   buttonView: {
     flexDirection: "row",
-    gap: 5,
+    alignItems: "center",
   },
 });

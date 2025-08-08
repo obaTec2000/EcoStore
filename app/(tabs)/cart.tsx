@@ -1,4 +1,3 @@
-import EmptyCart from "@/components/Empty";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
@@ -10,6 +9,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import EmptyCart from "../../components/Empty";
 import AppColors from "../../constants/Colors";
 import { useProductsStore } from "../../store/productStore";
 
