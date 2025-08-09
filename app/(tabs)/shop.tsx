@@ -1,4 +1,3 @@
-// screens/ShopScreen.tsx
 import { AntDesign } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
@@ -28,10 +27,10 @@ export default function ShopScreen() {
   const [activeCategory, setActiveCategory] = React.useState<string | null>(category || null);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [searchedProducts, setSearchedProducts] = React.useState<Product[]>([]);
+  const loadingPage = React.useRef<boolean>(false)
 
   const displayedProducts = activeCategory ? filteredProducts : products;
 
-  // Fetch products by category
   React.useEffect(() => {
     const fetchCategoryProducts = async () => {
       if (!activeCategory) return;
@@ -55,7 +54,6 @@ export default function ShopScreen() {
     fetchCategoryProducts();
   }, [activeCategory]);
 
-  // Debounced API search
   React.useEffect(() => {
     const handler = setTimeout(async () => {
       if (!searchQuery.trim()) {
@@ -84,10 +82,12 @@ export default function ShopScreen() {
     setActiveCategory(prev => prev === url ? null : url);
   };
 
-  const loadMore = () => {
-    if (!activeCategory && !searchQuery && !productLoading) {
-      const nextPage = page + 1;
-      fetchProducts(nextPage);
+  const loadMore = async () => {
+    if (!activeCategory && !searchQuery && !productLoading && !loadingPage.current) {
+      loadingPage.current = true
+      const nextPage = page + 1
+      await fetchProducts(nextPage);
+      loadingPage.current = false
     }
   };
 

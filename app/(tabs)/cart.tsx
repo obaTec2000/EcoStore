@@ -1,8 +1,10 @@
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
+  Modal,
   Pressable,
   StyleSheet,
   Text,
@@ -15,7 +17,9 @@ import { useProductsStore } from "../../store/productStore";
 
 const CartScreen = () => {
   const router = useRouter();
-  const { cart, addToCart, removeFromCart, reduceProductQuantity } = useProductsStore();
+  const { cart, addToCart, removeFromCart, reduceProductQuantity, clearCartItem } = useProductsStore();
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const getTotalAmount = () => {
     return cart.reduce((total, item) => total + item.price * (item.quantity || 1), 0);
@@ -54,10 +58,14 @@ const CartScreen = () => {
                     </Text>
                   )}
                 </View>
-                {item.timestamp && <Text style={styles.timestamp}>🕓 {new Date(item?.timestamp).toLocaleTimeString()}</Text>}
+                {item.timestamp && (
+                  <Text style={styles.timestamp}>
+                    🕓 {new Date(item?.timestamp).toLocaleTimeString()}
+                  </Text>
+                )}
               </Pressable>
 
-              <View style={{flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5}}>
+              <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5 }}>
                 <TouchableOpacity
                   style={styles.trashIcon}
                   onPress={() => removeFromCart(item.id)}
@@ -85,9 +93,7 @@ const CartScreen = () => {
               </View>
             </View>
           )}
-          ListEmptyComponent={
-            <EmptyCart />
-          }
+          ListEmptyComponent={<EmptyCart />}
         />
       </View>
 
@@ -109,13 +115,43 @@ const CartScreen = () => {
       </View>
 
       {cart.length > 0 && (
-        <TouchableOpacity style={styles.shippingButton}>
+        <TouchableOpacity
+          style={styles.shippingButton}
+          onPress={() => {
+            clearCartItem();
+            setIsModalVisible(true)
+          }}
+        >
           <Text style={styles.shippingText}>Shipping</Text>
         </TouchableOpacity>
       )}
+
+      {/* Shipping Modal */}
+      <Modal
+        transparent
+        visible={isModalVisible}
+        animationType="fade"
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Shipping Info</Text>
+            <Text style={styles.modalMessage}>
+              Your shipping process will start after checkout. Please proceed to payment to complete your order.
+            </Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setIsModalVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
+
 
 export default CartScreen;
 
@@ -229,4 +265,41 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "700",
   },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalBox: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 12,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: AppColors.primary[700],
+  },
+  modalMessage: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 20,
+    color: AppColors.gray[600],
+  },
+  modalButton: {
+    backgroundColor: AppColors.primary[600],
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+  },
+
 });

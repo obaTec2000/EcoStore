@@ -2,7 +2,7 @@
 
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   FlatList,
   RefreshControl,
@@ -33,6 +33,7 @@ export default function HomeScreen() {
     fetchProducts,
     fetchCategories,
   } = useProductsStore();
+  const loadingPage = useRef<boolean>(false)
   const [refreshing, setRefreshing] = useState(false);
 
   const featuredProducts = useMemo(() => [...products].reverse(), [products]);
@@ -72,10 +73,12 @@ export default function HomeScreen() {
     );
   }
 
-  const loadMoreProducts = () => {
-    if (!loading && products.length < total) {
+  const loadMoreProducts = async () => {
+    if (!loading && products.length < total && !loadingPage.current) {
+      loadingPage.current = true
       const nextPage = page + 1
-      fetchProducts(nextPage);
+      await fetchProducts(nextPage);
+      loadingPage.current = false
     }
   };
 

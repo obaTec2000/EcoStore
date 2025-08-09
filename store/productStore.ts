@@ -18,6 +18,7 @@ interface ProductsState {
   // Products actions
   fetchProducts: (page?: number) => Promise<void>;
   fetchCategories: () => Promise<void>;
+  clearCartItem: () => void
   addToCart: (product: Product) => void;
   reduceProductQuantity: (productId: number) => void;
   removeFromCart: (productId: number) => void;
@@ -29,12 +30,12 @@ export const useProductsStore = create<ProductsState>()(
       page: 0,
       total: 10,
       limit: 0,
-      products: [],
-      filteredProducts: [],
-      categories: [],
+      products: [], // No persistence
+      filteredProducts: [], // No persistence
+      categories: [], // No persistence
       loading: false,
       error: null,
-      cart: [],
+      cart: [], // Persist cart only
 
       fetchProducts: async (page = 0) => {
         try {
@@ -50,11 +51,12 @@ export const useProductsStore = create<ProductsState>()(
               products: [...state.products, ...data.products],
             }));
           }
-          set({ page, loading: false, total: data.total, });
+          set({ page, loading: false, total: data.total });
         } catch (error: any) {
           set({ error: error.message, loading: false });
         }
       },
+
       fetchCategories: async () => {
         try {
           set({ loading: true, error: null });
@@ -64,6 +66,7 @@ export const useProductsStore = create<ProductsState>()(
           set({ error: error.message, loading: false });
         }
       },
+
       addToCart: (product: Product) => {
         set((state) => {
           const existingProduct = state.cart.find(
@@ -86,6 +89,13 @@ export const useProductsStore = create<ProductsState>()(
           };
         });
       },
+
+      clearCartItem: () => {
+        set((state) => ({
+          cart: []
+        }))
+      },
+
       reduceProductQuantity: (productId: number) => {
         set((state) => ({
           cart: state.cart.map((item) =>
@@ -95,6 +105,7 @@ export const useProductsStore = create<ProductsState>()(
           ),
         }));
       },
+
       removeFromCart: (productId: number) => {
         set((state) => ({
           cart: state.cart.filter((item) => item.id !== productId),
@@ -102,8 +113,9 @@ export const useProductsStore = create<ProductsState>()(
       },
     }),
     {
-      name: "products-storage",
+      name: "cart-storage", // Persist only cart
       storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({ cart: state.cart }), // Exclude products & categories from persistence
     }
   )
 );
